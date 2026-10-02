@@ -1,0 +1,388 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+
+<title>React em 30 Dias</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: janela de navegador com o endereço do portfólio e o progresso; mapa de 30 dias em 3 fileiras; ficha do dia embaixo */
+:root {
+  --bg: #eef0f4;
+  --surface: #ffffff;
+  --ink: #15171c;
+  --muted: #5a6070;
+  --line: #d5d9e2;
+  --accent: #3355e0;
+  --accent-ink: #ffffff;
+  --code-bg: #171a21;
+  --code-fg: #e4e7ee;
+  --ok: #1f8a5b;
+  --ph-1: #0e8fb3;
+  --ph-2: #7b4fd6;
+  --ph-3: #1f8a5b;
+  --tile-empty: #e3e6ed;
+  --ph-ink: #ffffff;
+  --display: "Bricolage Grotesque", "Segoe UI", sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", Arial, sans-serif;
+  --mono: "IBM Plex Mono", Consolas, "Courier New", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111318; --surface: #191c23; --ink: #e8eaf0; --muted: #9aa1b2; --line: #2e333e;
+    --accent: #7d95ff; --accent-ink: #111318; --code-bg: #0b0d11; --code-fg: #e4e7ee; --ok: #4cc28a;
+    --ph-1: #4cc3e6; --ph-2: #a58cf0; --ph-3: #4cc28a; --tile-empty: #242832; --ph-ink: #111318;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111318; --surface: #191c23; --ink: #e8eaf0; --muted: #9aa1b2; --line: #2e333e;
+  --accent: #7d95ff; --accent-ink: #111318; --code-bg: #0b0d11; --code-fg: #e4e7ee; --ok: #4cc28a;
+  --ph-1: #4cc3e6; --ph-2: #a58cf0; --ph-3: #4cc28a; --tile-empty: #242832; --ph-ink: #111318;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; }
+.wrap { max-width: 980px; margin: 0 auto; padding-inline: 16px; padding-block: 24px 64px; display: grid; gap: 24px; }
+
+/* Cabeçalho */
+.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px; }
+.brand h1 { font-family: var(--display); font-weight: 800; font-size: 2.6rem; line-height: 1; margin: 0; letter-spacing: -.02em; }
+.brand p { margin: 6px 0 0; color: var(--muted); }
+.meter { min-width: 0; flex: 1 1 280px; max-width: 420px; }
+.meter-num { font-family: var(--display); font-weight: 700; font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+.meter-num small { font-size: 1rem; color: var(--muted); font-weight: 600; }
+.bar { height: 12px; background: var(--tile-empty); border-radius: 2px; overflow: hidden; margin-top: 6px;
+  background-image: repeating-linear-gradient(90deg, transparent 0 calc(2% - 1px), var(--bg) calc(2% - 1px) 2%); }
+.bar > i { display: block; height: 100%; background: var(--accent); width: 0; transition: width .4s; }
+.url { font: 400 .8rem var(--mono); color: var(--muted); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; margin-bottom: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.url::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--ok); margin-right: 8px; vertical-align: middle; }
+.sync { font-size: .8rem; color: var(--muted); margin-top: 4px; }
+
+/* Mapa */
+.board { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 16px; display: grid; gap: 8px; }
+.board-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; }
+.label { font-family: var(--mono); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; font-size: .75rem; color: var(--muted); }
+.level { display: grid; grid-template-columns: 92px 1fr; gap: 10px; align-items: center; }
+.level-name { font-family: var(--mono); font-weight: 600; font-size: .82rem; display: flex; gap: 6px; align-items: center; }
+.level-name::before { content: ""; width: 10px; height: 10px; border-radius: 2px; background: var(--ph); flex: none; }
+.tiles { display: grid; grid-template-columns: repeat(10, 1fr); gap: 5px; min-width: 0; }
+.tile { aspect-ratio: 1; max-width: 100%; border: 1px solid var(--line); border-radius: 3px; background: var(--tile-empty); color: var(--muted);
+  font: 600 .8rem/1 var(--mono); display: grid; place-items: center; cursor: pointer; padding: 0; transition: transform .12s; }
+.tile:hover { transform: translateY(-2px); }
+.tile.done { background: var(--ph); border-color: var(--ph); color: var(--ph-ink); }
+.tile.today { outline: 2px solid var(--accent); outline-offset: 2px; color: var(--ink); }
+.tile.sel { box-shadow: inset 0 0 0 2px var(--ink); }
+.tile:focus-visible, button:focus-visible, textarea:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: .85rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend b { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+
+/* Ficha do dia */
+.day { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.day-head { padding: 20px 20px 16px; border-top: 6px solid var(--ph); display: grid; gap: 6px; }
+.day-meta { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.chip { font: 600 .75rem/1 var(--mono); padding: 5px 8px; border-radius: 3px; background: var(--ph); color: var(--ph-ink); text-transform: uppercase; letter-spacing: .04em; }
+.chip.ok { background: var(--ok); }
+.chip.hoje { background: var(--accent); color: var(--accent-ink); }
+.day h2 { font-family: var(--display); font-weight: 800; letter-spacing: -.01em; font-size: 2.1rem; line-height: 1.05; margin: 0; text-wrap: balance; }
+.steps { padding: 0 20px 20px; display: grid; gap: 22px; }
+.step { display: grid; grid-template-columns: 44px 1fr; gap: 12px; }
+.step-n { font-family: var(--mono); font-weight: 600; font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding-top: 4px; }
+.step-n b { display: block; font-family: var(--display); font-size: 1.5rem; color: var(--ink); line-height: 1; }
+.step-body { min-width: 0; display: grid; gap: 10px; }
+.step h3 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 1.3rem; }
+.step p { margin: 0; max-width: 68ch; }
+.time { font: 400 .8rem var(--mono); color: var(--muted); }
+code { font-family: var(--mono); font-size: .88em; background: var(--tile-empty); padding: 1px 5px; border-radius: 3px; }
+pre { margin: 0; background: var(--code-bg); color: var(--code-fg); border-radius: 4px; padding: 14px 16px; overflow-x: auto; font: 400 .86rem/1.55 var(--mono); tab-size: 2; }
+pre code { background: none; padding: 0; font-size: inherit; color: inherit; }
+.codebox { position: relative; min-width: 0; }
+.codebox .tag { position: absolute; top: 8px; right: 8px; font: 600 .7rem var(--mono); color: #9aa19c; text-transform: uppercase; }
+.tasks { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.tasks label { display: grid; grid-template-columns: 22px 1fr; gap: 8px; align-items: start; cursor: pointer; padding: 6px 8px; border-radius: 4px; }
+.tasks label:hover { background: var(--bg); }
+.tasks input { width: 18px; height: 18px; margin: 3px 0 0; accent-color: var(--ph); }
+.tasks input:checked + span { color: var(--muted); text-decoration: line-through; }
+.challenge { border-left: 4px solid var(--accent); background: var(--bg); padding: 10px 14px; border-radius: 0 4px 4px 0; }
+.btn { font: 600 .95rem var(--body); border-radius: 4px; padding: 10px 16px; cursor: pointer; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+.btn:hover { border-color: var(--ink); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.primary:hover { filter: brightness(.95); }
+.btn.done { background: var(--ok); border-color: var(--ok); color: #fff; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.gate { border: 1px dashed var(--line); padding: 12px 14px; border-radius: 4px; display: grid; gap: 10px; }
+textarea { width: 100%; min-height: 84px; resize: vertical; font: 400 .95rem/1.5 var(--body); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; }
+.foot { border-top: 1px solid var(--line); padding: 16px 20px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center; }
+.muted { color: var(--muted); font-size: .9rem; }
+.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.rules div { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px; }
+.rules b { font-family: var(--display); font-weight: 600; font-size: 1.1rem; display: block; margin-bottom: 4px; }
+.rules p { margin: 0; color: var(--muted); font-size: .92rem; }
+
+
+.trilhas { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font: 600 .82rem var(--mono); }
+.trilhas .label { margin-right: 4px; }
+.trilha { padding: 5px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); text-decoration: none; background: var(--surface); }
+a.trilha:hover { color: var(--ink); border-color: var(--ink); }
+.trilha.atual { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.seta { color: var(--muted); }
+
+@media (max-width: 560px) {
+  .brand h1 { font-size: 2rem; }
+  .level { grid-template-columns: 1fr; gap: 4px; }
+  .tiles { gap: 3px; }
+  .tile { font-size: .66rem; }
+  .step { grid-template-columns: 1fr; gap: 4px; }
+  .step-n b { display: inline; font-size: 1rem; margin-right: 6px; }
+  .day h2 { font-size: 1.7rem; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <nav class="trilhas" aria-label="Trilhas"><span class="label">Trilha</span><span class="trilha atual" aria-current="page">React</span><span class="seta">→</span><a class="trilha" href="https://claude.ai/artifact/59rjXFEhZLrkUHbZsjHtKU" target="_blank" rel="noopener">Tailwind</a><span class="seta">→</span><a class="trilha" href="https://claude.ai/artifact/Je6oF2VTjHqbTaMNSqkkY6" target="_blank" rel="noopener">TypeScript</a><span class="seta">→</span><a class="trilha" href="https://claude.ai/artifact/KznudxAmW5wgwy6SdZNPk4" target="_blank" rel="noopener">Next.js</a></nav>
+  <header class="top">
+    <div class="brand">
+      <h1>React em 30 Dias</h1>
+      <p>Um projeto React por dia. Do primeiro componente ao app publicado.</p>
+    </div>
+    <div class="meter" aria-live="polite">
+      <div class="url"><span>localhost:5173 · pasta react-30</span></div>
+      <div class="meter-num"><span id="feitos">0</span> <small>de 30 dias feitos</small></div>
+      <div class="bar"><i id="barra"></i></div>
+      <div class="sync" id="sync">Progresso salvo neste navegador</div>
+    </div>
+  </header>
+
+  <section class="board" aria-label="Mapa dos 30 dias">
+    <div class="board-head">
+      <span class="label">Mapa dos 30 dias · clique em um dia</span>
+      <div class="legend">
+        <span><b style="background:var(--tile-empty);border:1px solid var(--line)"></b>A fazer</span>
+        <span><b style="outline:2px solid var(--accent)"></b>Hoje</span>
+        <span><b style="background:var(--ph-1)"></b>Feito</span>
+      </div>
+    </div>
+    <div id="niveis"></div>
+  </section>
+
+  <article class="day" id="dia" aria-live="polite"></article>
+
+  <section class="rules" aria-label="Regras">
+    <div><b>Uma pasta só</b><p>Tudo fica no projeto react-30. Cada dia ganha um arquivo em src/dias e o App.jsx mostra o dia atual.</p></div><div><b>Digite tudo</b><p>Nada de copiar e colar. A mão aprende junto com a cabeça.</p></div><div><b>Leia o erro</b><p>Tela branca? Abra o F12 &gt; Console. O React diz a linha do problema.</p></div><div><b>GitHub todo dia</b><p>Termine o dia com git add, git commit e git push.</p></div>
+  </section>
+</div>
+
+<script>
+const DIAS = [{"titulo": "Criando o projeto", "novo": "Node, npm e Vite", "explicacao": "O React roda num projeto criado pelo Vite. O Node.js instala as ferramentas e o `npm` é o instalador de pacotes que vem com ele. Componente é uma função que devolve o que aparece na tela.", "exemplo": "npm create vite@latest react-30 -- --template react\ncd react-30\nnpm install\nnpm run dev", "tarefas": ["Instale o Node.js versão LTS (nodejs.org) e confira no terminal com `node -v`", "Rode os 4 comandos do exemplo no terminal do VS Code", "Abra `http://localhost:5173` no navegador", "Em `src/App.jsx`, apague tudo e escreva um componente que mostra \"Olá, React!\"", "Apague o conteúdo de `src/App.css` e `src/index.css` (deixe os arquivos vazios)", "Salve e veja a página mudar sozinha"], "desafio": "Mude o texto 3 vezes e veja o navegador atualizar sem você recarregar.", "solucao": "// src/App.jsx\nfunction App() {\n  return <h1>Olá, React!<\/h1>;\n}\n\nexport default App;", "arquivo": "src/App.jsx", "lex": "bash", "lsol": "jsx"}, {"titulo": "Cartão de visita", "novo": "JSX", "explicacao": "JSX parece HTML, mas está dentro do JavaScript. Três regras: o componente devolve um elemento pai só, `class` vira `className`, e tudo que é JavaScript vai entre chaves `{ }`.", "exemplo": "const nome = \"Seu Nome\";\n\nreturn (\n  <div className=\"cartao\">\n    <h1>{nome}<\/h1>\n    <p>{2026 - 2000} anos de idade<\/p>\n  <\/div>\n);", "tarefas": ["Crie a pasta `src/dias` e o arquivo `src/dias/Dia02.jsx`", "Crie variáveis com nome, cargo, cidade e e-mail", "Monte um cartão com tudo isso dentro de uma `<div className=\"cartao\">`", "No `App.jsx`, importe e mostre o `Dia02`"], "desafio": "Coloque o ano atual no rodapé do cartão com `new Date().getFullYear()` dentro das chaves.", "solucao": "// src/dias/Dia02.jsx\nfunction Dia02() {\n  const nome = \"Seu Nome\";\n  const cargo = \"Desenvolvedor Web\";\n  const cidade = \"Sua Cidade - UF\";\n  const email = \"contato@email.com\";\n\n  return (\n    <div className=\"cartao\">\n      <h1>{nome}<\/h1>\n      <p>{cargo}<\/p>\n      <p>{cidade}<\/p>\n      <p>{email}<\/p>\n      <small>© {new Date().getFullYear()}<\/small>\n    <\/div>\n  );\n}\n\nexport default Dia02;\n\n// src/App.jsx\nimport Dia02 from \"./dias/Dia02\";\n\nfunction App() {\n  return <Dia02 />;\n}\n\nexport default App;", "arquivo": "src/dias/Dia02.jsx", "lex": "jsx", "lsol": "jsx"}, {"titulo": "Peças de montar", "novo": "Componentes", "explicacao": "Um componente é uma peça que você reaproveita. Fica num arquivo próprio, começa com letra maiúscula e é usado como uma tag: `<Botao />`. Para usar em outro arquivo, você exporta e importa.", "exemplo": "// src/components/Titulo.jsx\nfunction Titulo() {\n  return <h2>Meus links<\/h2>;\n}\nexport default Titulo;\n\n// em outro arquivo\nimport Titulo from \"../components/Titulo\";\n<Titulo />", "tarefas": ["Crie a pasta `src/components`", "Crie os componentes `Cabecalho`, `Rodape` e `BotaoLink`, um em cada arquivo", "Em `Dia03.jsx`, monte uma página de links: Cabecalho, 3 BotaoLink e Rodape", "Mostre o Dia03 no App"], "desafio": "Use o `BotaoLink` 5 vezes seguidas. Repare que você escreveu ele uma vez só.", "solucao": "// src/components/Cabecalho.jsx\nfunction Cabecalho() {\n  return <h1>Seu Nome<\/h1>;\n}\nexport default Cabecalho;\n\n// src/components/BotaoLink.jsx\nfunction BotaoLink() {\n  return <a className=\"botao\" href=\"#\">Meu link<\/a>;\n}\nexport default BotaoLink;\n\n// src/components/Rodape.jsx\nfunction Rodape() {\n  return <footer>Feito com React<\/footer>;\n}\nexport default Rodape;\n\n// src/dias/Dia03.jsx\nimport Cabecalho from \"../components/Cabecalho\";\nimport BotaoLink from \"../components/BotaoLink\";\nimport Rodape from \"../components/Rodape\";\n\nfunction Dia03() {\n  return (\n    <main>\n      <Cabecalho />\n      <BotaoLink />\n      <BotaoLink />\n      <BotaoLink />\n      <Rodape />\n    <\/main>\n  );\n}\nexport default Dia03;", "arquivo": "src/dias/Dia03.jsx", "lex": "jsx", "lsol": "jsx"}, {"titulo": "Vitrine de produtos", "novo": "Props", "explicacao": "Props são as informações que você passa para um componente, como atributos de uma tag. O componente recebe tudo num objeto e você pega com `{ nome, preco }`. O mesmo componente mostra dados diferentes.", "exemplo": "function Produto({ nome, preco }) {\n  return <p>{nome}: R$ {preco}<\/p>;\n}\n\n<Produto nome=\"Teclado\" preco={150} />", "tarefas": ["Crie `src/components/Produto.jsx` que recebe `nome`, `preco` e `imagem`", "Mostre a imagem, o nome e o preço com `preco.toFixed(2)`", "Em `Dia04.jsx`, use o Produto 3 vezes com dados diferentes", "Imagens de teste: `https://picsum.photos/300/200?random=1` (troque o número)"], "desafio": "Volte no Dia 03 e faça o `BotaoLink` receber `texto` e `link` por props.", "solucao": "// src/components/Produto.jsx\nfunction Produto({ nome, preco, imagem }) {\n  return (\n    <div className=\"produto\">\n      <img src={imagem} alt={nome} width=\"300\" />\n      <h3>{nome}<\/h3>\n      <p>R$ {preco.toFixed(2)}<\/p>\n    <\/div>\n  );\n}\nexport default Produto;\n\n// src/dias/Dia04.jsx\nimport Produto from \"../components/Produto\";\n\nfunction Dia04() {\n  return (\n    <section>\n      <Produto nome=\"Teclado\" preco={149.9} imagem=\"https://picsum.photos/300/200?random=1\" />\n      <Produto nome=\"Mouse\" preco={59.9} imagem=\"https://picsum.photos/300/200?random=2\" />\n      <Produto nome=\"Monitor\" preco={899} imagem=\"https://picsum.photos/300/200?random=3\" />\n    <\/section>\n  );\n}\nexport default Dia04;", "arquivo": "src/components/Produto.jsx", "lex": "jsx", "lsol": "jsx"}, {"titulo": "Lista de habilidades", "novo": "map e key", "explicacao": "Para mostrar uma lista, guarde os dados num array e use `.map()` para transformar cada item em JSX. Cada item precisa de uma `key` única, para o React saber quem é quem.", "exemplo": "const frutas = [\"Maçã\", \"Banana\"];\n\n<ul>\n  {frutas.map((f) => <li key={f}>{f}<\/li>)}\n<\/ul>", "tarefas": ["Crie um array com 6 habilidades", "Mostre numa `<ul>` usando `map`", "Agora faça um array de objetos: `{ id, nome, nivel }`", "Mostre nome e nível, usando `id` como `key`", "Abra o Console e veja o aviso que aparece se tirar a `key`"], "desafio": "Mostre embaixo: \"Total: X habilidades\" usando `.length`.", "solucao": "// src/dias/Dia05.jsx\nconst habilidades = [\n  { id: 1, nome: \"HTML\", nivel: \"Bom\" },\n  { id: 2, nome: \"CSS\", nivel: \"Bom\" },\n  { id: 3, nome: \"JavaScript\", nivel: \"Médio\" },\n  { id: 4, nome: \"Git\", nivel: \"Médio\" },\n  { id: 5, nome: \"React\", nivel: \"Começando\" },\n  { id: 6, nome: \"Figma\", nivel: \"Começando\" },\n];\n\nfunction Dia05() {\n  return (\n    <section>\n      <h2>Habilidades<\/h2>\n      <ul>\n        {habilidades.map((h) => (\n          <li key={h.id}>\n            {h.nome} <small>({h.nivel})<\/small>\n          <\/li>\n        ))}\n      <\/ul>\n      <p>Total: {habilidades.length} habilidades<\/p>\n    <\/section>\n  );\n}\nexport default Dia05;", "arquivo": "src/dias/Dia05.jsx", "lex": "jsx", "lsol": "jsx"}, {"titulo": "Etiquetas de estoque", "novo": "Renderização condicional", "explicacao": "Às vezes algo só aparece em certos casos. `condicao && <p>...<\/p>` mostra só se for verdade. O ternário `condicao ? A : B` escolhe entre duas coisas.", "exemplo": "{novo && <span>Novo!<\/span>}\n{estoque > 0 ? <button>Comprar<\/button> : <p>Esgotado<\/p>}", "tarefas": ["Use o array de produtos do Dia 04, agora com `estoque` e `novo` (true/false)", "Mostre a etiqueta \"Novo\" só nos produtos novos", "Mostre \"Comprar\" se tiver estoque, senão \"Esgotado\"", "Se o estoque for menor que 3, mostre \"Últimas unidades\""], "desafio": "Deixe o card do produto esgotado mais apagado com `style={{ opacity: 0.5 }}`.", "solucao": "// src/dias/Dia06.jsx\nconst produtos = [\n  { id: 1, nome: \"Teclado\", preco: 149.9, estoque: 10, novo: true },\n  { id: 2, nome: \"Mouse\", preco: 59.9, estoque: 2, novo: false },\n  { id: 3, nome: \"Monitor\", preco: 899, estoque: 0, novo: false },\n];\n\nfunction Dia06() {\n  return (\n    <section>\n      {produtos.map((p) => (\n        <div key={p.id} style={{ opacity: p.estoque === 0 ? 0.5 : 1 }}>\n          <h3>\n            {p.nome} {p.novo && <span>Novo!<\/span>}\n          <\/h3>\n          <p>R$ {p.preco.toFixed(2)}<\/p>\n          {p.estoque > 0 && p.estoque < 3 && <p>Últimas unidades<\/p>}\n          {p.estoque > 0 ? <button>Comprar<\/button> : <p>Esgotado<\/p>}\n        <\/div>\n      ))}\n    <\/section>\n  );\n}\nexport default Dia06;", "arquivo": "src/dias/Dia06.jsx", "lex": "jsx", "lsol": "jsx"}, {"titulo": "Cartão de perfil estilizado", "novo": "CSS no React", "explicacao": "O jeito mais comum: um arquivo `.css` importado no componente e `className` no JSX. Para um estilo que muda com dados, use `style={{ }}` com nomes em camelCase: `backgroundColor`, não `background-color`.", "exemplo": "import \"./Perfil.css\";\n\n<div className=\"perfil\" style={{ borderColor: cor }}>", "tarefas": ["Crie `src/components/Perfil.jsx` e `src/components/Perfil.css`", "O Perfil recebe `nome`, `cargo`, `foto` e `cor`", "No CSS: card com borda, cantos arredondados, foto redonda e sombra", "Use a prop `cor` na borda com `style`", "Mostre 3 perfis com cores diferentes no Dia07"], "desafio": "Faça a cor do nome também vir da prop `cor`.", "solucao": "/* src/components/Perfil.css */\n.perfil {\n  width: 240px;\n  padding: 20px;\n  text-align: center;\n  border: 3px solid;\n  border-radius: 12px;\n  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);\n}\n.perfil img {\n  width: 96px;\n  height: 96px;\n  border-radius: 50%;\n  object-fit: cover;\n}\n\n// src/components/Perfil.jsx\nimport \"./Perfil.css\";\n\nfunction Perfil({ nome, cargo, foto, cor }) {\n  return (\n    <div className=\"perfil\" style={{ borderColor: cor }}>\n      <img src={foto} alt={nome} />\n      <h3 style={{ color: cor }}>{nome}<\/h3>\n      <p>{cargo}<\/p>\n    <\/div>\n  );\n}\nexport default Perfil;\n\n// src/dias/Dia07.jsx\nimport Perfil from \"../components/Perfil\";\n\nfunction Dia07() {\n  return (\n    <div style={{ display: \"flex\", gap: 16 }}>\n      <Perfil nome=\"Ana\" cargo=\"Designer\" foto=\"https://picsum.photos/200?random=4\" cor=\"#7b4fd6\" />\n      <Perfil nome=\"Bruno\" cargo=\"Back-end\" foto=\"https://picsum.photos/200?random=5\" cor=\"#0e8fb3\" />\n      <Perfil nome=\"Carla\" cargo=\"Front-end\" foto=\"https://picsum.photos/200?random=6\" cor=\"#1f8a5b\" />\n    <\/div>\n  );\n}\nexport default Dia07;", "arquivo": "src/components/Perfil.jsx", "lex": "jsx", "lsol": "css"}, {"titulo": "Caixas que embrulham", "novo": "children", "explicacao": "`children` é o que você coloca entre a abertura e o fechamento do componente. Serve para criar caixas, painéis e layouts que envolvem qualquer conteúdo.", "exemplo": "function Painel({ titulo, children }) {\n  return (\n    <section>\n      <h2>{titulo}<\/h2>\n      {children}\n    <\/section>\n  );\n}\n\n<Painel titulo=\"Avisos\">\n  <p>Reunião às 10h<\/p>\n<\/Painel>", "tarefas": ["Crie o componente `Painel` com `titulo` e `children`", "Dê a ele um visual de caixa (borda, padding, cantos)", "No Dia08, crie 3 painéis com conteúdos diferentes: um texto, uma lista e uma imagem", "Crie também um componente `Layout` com cabeçalho e rodapé fixos e o `children` no meio"], "desafio": "Coloque um Painel dentro de outro Painel.", "solucao": "// src/components/Painel.jsx\nfunction Painel({ titulo, children }) {\n  return (\n    <section style={{ border: \"1px solid #ccc\", borderRadius: 8, padding: 16, marginBottom: 16 }}>\n      <h2>{titulo}<\/h2>\n      {children}\n    <\/section>\n  );\n}\nexport default Painel;\n\n// src/components/Layout.jsx\nfunction Layout({ children }) {\n  return (\n    <>\n      <header><strong>Meu App<\/strong><\/header>\n      <main>{children}<\/main>\n      <footer>Rodapé<\/footer>\n    <\/>\n  );\n}\nexport default Layout;\n\n// src/dias/Dia08.jsx\nimport Layout from \"../components/Layout\";\nimport Painel from \"../components/Painel\";\n\nfunction Dia08() {\n  return (\n    <Layout>\n      <Painel titulo=\"Sobre\">\n        <p>Estou aprendendo React.<\/p>\n      <\/Painel>\n      <Painel titulo=\"Tarefas\">\n        <ul><li>Estudar<\/li><li>Praticar<\/li><\/ul>\n      <\/Painel>\n      <Painel titulo=\"Foto\">\n        <img src=\"https://picsum.photos/300/150\" alt=\"Paisagem\" />\n      <\/Painel>\n    <\/Layout>\n  );\n}\nexport default Dia08;", "arquivo": "src/components/Painel.jsx", "lex": "jsx", "lsol": "jsx"}, {"titulo": "Botões que respondem", "novo": "Eventos", "explicacao": "No React o evento vai direto na tag: `onClick={funcao}`. Passe a função sem parênteses. Com parênteses ela roda na hora, não no clique. Para passar um valor, use uma arrow function.", "exemplo": "function avisar(nome) {\n  console.log(\"Clicou em\", nome);\n}\n\n<button onClick={() => avisar(\"Teclado\")}>Comprar<\/button>", "tarefas": ["Crie 3 botões que mostram mensagens diferentes no Console", "Crie um input com `onChange` que mostra no Console o que foi digitado (`e.target.value`)", "Crie um componente `Botao` que recebe `texto` e `aoClicar` por props", "Use o mesmo `Botao` com 2 ações diferentes"], "desafio": "Escreva `onClick={avisar()}` (com parênteses), veja o que acontece no Console e depois corrija.", "solucao": "// src/components/Botao.jsx\nfunction Botao({ texto, aoClicar }) {\n  return <button onClick={aoClicar}>{texto}<\/button>;\n}\nexport default Botao;\n\n// src/dias/Dia09.jsx\nimport Botao from \"../components/Botao\";\n\nfunction Dia09() {\n  function avisar(produto) {\n    console.log(\"Adicionou\", produto);\n  }\n\n  return (\n    <div>\n      <button onClick={() => avisar(\"Teclado\")}>Teclado<\/button>\n      <button onClick={() => avisar(\"Mouse\")}>Mouse<\/button>\n      <button onClick={() => console.log(\"Limpou\")}>Limpar<\/button>\n\n      <input onChange={(e) => console.log(e.target.value)} placeholder=\"Digite\" />\n\n      <Botao texto=\"Salvar\" aoClicar={() => console.log(\"Salvo\")} />\n      <Botao texto=\"Cancelar\" aoClicar={() => console.log(\"Cancelado\")} />\n    <\/div>\n  );\n}\nexport default Dia09;", "arquivo": "src/dias/Dia09.jsx", "lex": "jsx", "lsol": "jsx"}, {"titulo": "Cardápio da lanchonete", "novo": "Projeto da fase", "explicacao": "Hoje você junta tudo da fase: componentes, props, map, condicional, CSS e eventos. Os dados ficam num arquivo separado, como se viessem de um banco.", "exemplo": "// src/dados/cardapio.js\nexport const cardapio = [\n  { id: 1, nome: \"X-Burguer\", preco: 22, categoria: \"Lanches\", disponivel: true },\n];", "tarefas": ["Crie `src/dados/cardapio.js` com 8 itens em 3 categorias", "Crie o componente `ItemCardapio` com nome, preço e botão \"Pedir\"", "Item indisponível mostra \"Esgotado\" e não tem botão", "Separe por categoria: um `Painel` para cada (use `filter`)", "O botão Pedir mostra no Console o item pedido", "Faça um commit e envie para o GitHub"], "desafio": "Mostre no topo quantos itens estão disponíveis.", "solucao": "// src/dados/cardapio.js\nexport const cardapio = [\n  { id: 1, nome: \"X-Burguer\", preco: 22, categoria: \"Lanches\", disponivel: true },\n  { id: 2, nome: \"X-Salada\", preco: 24, categoria: \"Lanches\", disponivel: true },\n  { id: 3, nome: \"X-Tudo\", preco: 32, categoria: \"Lanches\", disponivel: false },\n  { id: 4, nome: \"Batata\", preco: 15, categoria: \"Porções\", disponivel: true },\n  { id: 5, nome: \"Onion rings\", preco: 18, categoria: \"Porções\", disponivel: true },\n  { id: 6, nome: \"Refrigerante\", preco: 7, categoria: \"Bebidas\", disponivel: true },\n  { id: 7, nome: \"Suco\", preco: 9, categoria: \"Bebidas\", disponivel: false },\n  { id: 8, nome: \"Água\", preco: 4, categoria: \"Bebidas\", disponivel: true },\n];\n\n// src/components/ItemCardapio.jsx\nfunction ItemCardapio({ item }) {\n  return (\n    <div className=\"item\">\n      <span>{item.nome}<\/span>\n      <strong>R$ {item.preco.toFixed(2)}<\/strong>\n      {item.disponivel ? (\n        <button onClick={() => console.log(\"Pedido:\", item.nome)}>Pedir<\/button>\n      ) : (\n        <em>Esgotado<\/em>\n      )}\n    <\/div>\n  );\n}\nexport default ItemCardapio;\n\n// src/dias/Dia10.jsx\nimport { cardapio } from \"../dados/cardapio\";\nimport Painel from \"../components/Painel\";\nimport ItemCardapio from \"../components/ItemCardapio\";\n\nconst categorias = [\"Lanches\", \"Porções\", \"Bebidas\"];\n\nfunction Dia10() {\n  const disponiveis = cardapio.filter((i) => i.disponivel).length;\n\n  return (\n    <main>\n      <h1>Cardápio<\/h1>\n      <p>{disponiveis} itens disponíveis hoje<\/p>\n      {categorias.map((cat) => (\n        <Painel key={cat} titulo={cat}>\n          {cardapio\n            .filter((i) => i.categoria === cat)\n            .map((i) => <ItemCardapio key={i.id} item={i} />)}\n        <\/Painel>\n      ))}\n    <\/main>\n  );\n}\nexport default Dia10;", "arquivo": "src/dias/Dia10.jsx", "lex": "js", "lsol": "jsx"}, {"titulo": "Contador", "novo": "useState", "explicacao": "Estado é uma informação que muda e faz a tela atualizar. `useState(0)` devolve o valor atual e uma função para mudar. Nunca mude o valor direto: sempre use a função.", "exemplo": "import { useState } from \"react\";\n\nconst [contador, setContador] = useState(0);\n\n<button onClick={() => setContador(contador + 1)}>+1<\/button>", "tarefas": ["Crie um contador com botões +1, -1 e Zerar", "Não deixe passar de 0 para baixo", "Mostre o número grande no centro", "Mude a cor do número: verde se maior que 10, vermelho se for 0"], "desafio": "Crie um segundo contador independente na mesma tela. Cada `useState` é uma caixa separada.", "solucao": "// src/dias/Dia11.jsx\nimport { useState } from \"react\";\n\nfunction Dia11() {\n  const [contador, setContador] = useState(0);\n\n  let cor = \"black\";\n  if (contador === 0) cor = \"red\";\n  if (contador > 10) cor = \"green\";\n\n  return (\n    <div style={{ textAlign: \"center\" }}>\n      <h1 style={{ fontSize: 80, color: cor }}>{contador}<\/h1>\n      <button onClick={() => setContador(contador - 1)} disabled={contador === 0}>-1<\/button>\n      <button onClick={() => setContador(0)}>Zerar<\/button>\n      <button onClick={() => setContador(contador + 1)}>+1<\/button>\n    <\/div>\n  );\n}\nexport default Dia11;", "arquivo": "src/dias/Dia11.jsx", "lex": "jsx", "lsol": "jsx"}, {"titulo": "Contador de caracteres", "novo": "Input controlado", "explicacao": "Input controlado é quando o estado manda no campo: `value={texto}` e `onChange` atualiza o estado. Assim você sempre sabe o que está escrito e pode reagir a cada letra.", "exemplo": "const [texto, setTexto] = useState(\"\");\n\n<textarea value={texto} onChange={(e) => setTexto(e.target.value)} />\n<p>{texto.length} caracteres<\/p>", "tarefas": ["Crie uma caixa de texto controlada", "Mostre quantos caracteres e quantas palavras tem", "Limite de 280: mostre quantos faltam", "Se passar do limite, o contador fica vermelho e o botão Publicar desativa"], "desafio": "Mostre uma prévia do texto embaixo, tudo em maiúsculas.", "solucao": "// src/dias/Dia12.jsx\nimport { useState } from \"react\";\n\nconst LIMITE = 280;\n\nfunction Dia12() {\n  const [texto, setTexto] = useState(\"\");\n\n  const palavras = texto.trim() === \"\" ? 0 : texto.trim().split(/\\s+/).length;\n  const faltam = LIMITE - texto.length;\n\n  return (\n    <div>\n      <textarea\n        value={texto}\n        onChange={(e) => setTexto(e.target.value)}\n        rows={5}\n        cols={50}\n      />\n      <p>{palavras} palavras<\/p>\n      <p style={{ color: faltam < 0 ? \"red\" : \"inherit\" }}>Faltam {faltam}<\/p>\n      <button disabled={faltam < 0 || texto.length === 0}>Publicar<\/button>\n      <p>{texto.toUpperCase()}<\/p>\n    <\/div>\n  );\n}\nexport default Dia12;", "arquivo": "src/dias/Dia12.jsx", "lex": "jsx", "lsol": "jsx"}, {"titulo": "Perguntas frequentes", "novo": "Estado true/false", "explicacao": "Um estado booleano liga e desliga coisas. `setAberto(!aberto)` inverte o valor. Para várias perguntas, guarde qual está aberta (o `id`) em vez de um booleano para cada.", "exemplo": "const [aberto, setAberto] = useState(false);\n\n<button onClick={() => setAberto(!aberto)}>Pergunta<\/button>\n{aberto && <p>Resposta<\/p>}", "tarefas": ["Crie um campo de senha com botão \"Mostrar/Esconder\" (troque `type` entre `password` e `text`)", "Crie uma lista de 4 perguntas e respostas num array", "Ao clicar numa pergunta, a resposta abre", "Só uma aberta por vez: guarde o `id` aberto no estado", "Clicar na aberta fecha ela"], "desafio": "Mostre \"+\" na pergunta fechada e \"−\" na aberta.", "solucao": "// src/dias/Dia13.jsx\nimport { useState } from \"react\";\n\nconst faq = [\n  { id: 1, p: \"Qual o prazo de entrega?\", r: \"De 3 a 7 dias úteis.\" },\n  { id: 2, p: \"Posso trocar?\", r: \"Sim, em até 30 dias.\" },\n  { id: 3, p: \"Quais as formas de pagamento?\", r: \"Pix, cartão e boleto.\" },\n  { id: 4, p: \"Tem frete grátis?\", r: \"Acima de R$ 200.\" },\n];\n\nfunction Dia13() {\n  const [verSenha, setVerSenha] = useState(false);\n  const [aberta, setAberta] = useState(null);\n\n  return (\n    <div>\n      <input type={verSenha ? \"text\" : \"password\"} placeholder=\"Senha\" />\n      <button onClick={() => setVerSenha(!verSenha)}>\n        {verSenha ? \"Esconder\" : \"Mostrar\"}\n      <\/button>\n\n      <h2>Perguntas frequentes<\/h2>\n      {faq.map((item) => (\n        <div key={item.id}>\n          <button onClick={() => setAberta(aberta === item.id ? null : item.id)}>\n            {aberta === item.id ? \"−\" : \"+\"} {item.p}\n          <\/button>\n          {aberta === item.id && <p>{item.r}<\/p>}\n        <\/div>\n      ))}\n    <\/div>\n  );\n}\nexport default Dia13;", "arquivo": "src/dias/Dia13.jsx", "lex": "jsx", "lsol": "jsx"}, {"titulo": "Lista de compras", "novo": "Estado com array", "explicacao": "Para mudar um array no estado, você cria um array novo. Adicionar: `[...lista, novo]`. Remover: `lista.filter(...)`. Nunca use `push` no estado.", "exemplo": "setLista([...lista, \"Arroz\"]);\nsetLista(lista.filter((item) => item !== \"Arroz\"));", "tarefas": ["Input controlado e botão Adicionar", "Ao adicionar, o item entra na lista e o input limpa", "Não deixe adicionar texto vazio", "Cada item tem um botão ✕ que remove", "Mostre \"Lista vazia\" quando não tiver nada"], "desafio": "Faça o Enter também adicionar, usando um `<form>` com `onSubmit` e `e.preventDefault()`.", "solucao": "// src/dias/Dia14.jsx\nimport { useState } from \"react\";\n\nfunction Dia14() {\n  const [texto, setTexto] = useState(\"\");\n  const [lista, setLista] = useState([]);\n\n  function adicionar(e) {\n    e.preventDefault();\n    if (texto.trim() === \"\") return;\n    setLista([...lista, texto.trim()]);\n    setTexto(\"\");\n  }\n\n  function remover(indice) {\n    setLista(lista.filter((_, i) => i !== indice));\n  }\n\n  return (\n    <div>\n      <form onSubmit={adicionar}>\n        <input value={texto} onChange={(e) => setTexto(e.target.value)} />\n        <button>Adicionar<\/button>\n      <\/form>\n\n      {lista.length === 0 && <p>Lista vazia<\/p>}\n      <ul>\n        {lista.map((item, i) => (\n          <li key={i}>\n            {item} <button onClick={() => remover(i)}>✕<\/button>\n          <\/li>\n        ))}\n      <\/ul>\n    <\/div>\n  );\n}\nexport default Dia14;", "arquivo": "src/dias/Dia14.jsx", "lex": "jsx", "lsol": "jsx"}, {"titulo": "Lista de tarefas", "novo": "Atualizar um item do array", "explicacao": "Cada tarefa é um objeto `{ id, texto, feita }`. Para marcar uma como feita, use `map`: devolve a mesma tarefa, menos a clicada, que volta com `feita` invertido. `Date.now()` serve como id simples.", "exemplo": "setTarefas(tarefas.map((t) =>\n  t.id === id ? { ...t, feita: !t.feita } : t\n));", "tarefas": ["Adicione tarefas como objetos com `id: Date.now()`", "Checkbox marca e desmarca a tarefa", "Tarefa feita fica riscada (`textDecoration: \"line-through\"`)", "Botão para remover", "Mostre \"X pendentes\" no topo"], "desafio": "Botão \"Limpar feitas\" que remove todas as tarefas concluídas de uma vez.", "solucao": "// src/dias/Dia15.jsx\nimport { useState } from \"react\";\n\nfunction Dia15() {\n  const [texto, setTexto] = useState(\"\");\n  const [tarefas, setTarefas] = useState([]);\n\n  function adicionar(e) {\n    e.preventDefault();\n    if (!texto.trim()) return;\n    setTarefas([...tarefas, { id: Date.now(), texto: texto.trim(), feita: false }]);\n    setTexto(\"\");\n  }\n\n  function alternar(id) {\n    setTarefas(tarefas.map((t) => (t.id === id ? { ...t, feita: !t.feita } : t)));\n  }\n\n  function remover(id) {\n    setTarefas(tarefas.filter((t) => t.id !== id));\n  }\n\n  const pendentes = tarefas.filter((t) => !t.feita).length;\n\n  return (\n    <div>\n      <h2>{pendentes} pendentes<\/h2>\n      <form onSubmit={adicionar}>\n        <input value={texto} onChange={(e) => setTexto(e.target.value)} />\n        <button>Adicionar<\/button>\n      <\/form>\n      <ul>\n        {tarefas.map((t) => (\n          <li key={t.id}>\n            <input type=\"checkbox\" checked={t.feita} onChange={() => alternar(t.id)} />\n            <span style={{ textDecoration: t.feita ? \"line-through\" : \"none\" }}>{t.texto}<\/span>\n            <button onClick={() => remover(t.id)}>✕<\/button>\n          <\/li>\n        ))}\n      <\/ul>\n      <button onClick={() => setTarefas(tarefas.filter((t) => !t.feita))}>Limpar feitas<\/button>\n    <\/div>\n  );\n}\nexport default Dia15;", "arquivo": "src/dias/Dia15.jsx", "lex": "jsx", "lsol": "jsx"}, {"titulo": "Formulário de cadastro", "novo": "Estado com objeto", "explicacao": "Um formulário com vários campos pode usar um objeto só no estado. Cada input tem um `name` igual à chave do objeto, e uma função só atualiza qualquer campo com `[e.target.name]`.", "exemplo": "const [form, setForm] = useState({ nome: \"\", email: \"\" });\n\nfunction mudar(e) {\n  setForm({ ...form, [e.target.name]: e.target.value });\n}", "tarefas": ["Campos: nome, e-mail, cidade e um `select` de área (Front-end, Back-end, Design)", "Use um objeto só no estado e uma função `mudar` para todos", "No envio, mostre na tela um resumo do cadastro", "Se nome ou e-mail estiver vazio, mostre uma mensagem de erro em vermelho", "Botão \"Novo cadastro\" limpa tudo"], "desafio": "Valide o e-mail: precisa ter `@`. Use `form.email.includes(\"@\")`.", "solucao": "// src/dias/Dia16.jsx\nimport { useState } from \"react\";\n\nconst vazio = { nome: \"\", email: \"\", cidade: \"\", area: \"Front-end\" };\n\nfunction Dia16() {\n  const [form, setForm] = useState(vazio);\n  const [erro, setErro] = useState(\"\");\n  const [enviado, setEnviado] = useState(null);\n\n  function mudar(e) {\n    setForm({ ...form, [e.target.name]: e.target.value });\n  }\n\n  function enviar(e) {\n    e.preventDefault();\n    if (!form.nome || !form.email) return setErro(\"Preencha nome e e-mail.\");\n    if (!form.email.includes(\"@\")) return setErro(\"E-mail inválido.\");\n    setErro(\"\");\n    setEnviado(form);\n  }\n\n  if (enviado) {\n    return (\n      <div>\n        <h2>Cadastro feito<\/h2>\n        <p>{enviado.nome} · {enviado.email}<\/p>\n        <p>{enviado.cidade} · {enviado.area}<\/p>\n        <button onClick={() => { setEnviado(null); setForm(vazio); }}>Novo cadastro<\/button>\n      <\/div>\n    );\n  }\n\n  return (\n    <form onSubmit={enviar}>\n      <input name=\"nome\" value={form.nome} onChange={mudar} placeholder=\"Nome\" />\n      <input name=\"email\" value={form.email} onChange={mudar} placeholder=\"E-mail\" />\n      <input name=\"cidade\" value={form.cidade} onChange={mudar} placeholder=\"Cidade\" />\n      <select name=\"area\" value={form.area} onChange={mudar}>\n        <option>Front-end<\/option>\n        <option>Back-end<\/option>\n        <option>Design<\/option>\n      <\/select>\n      {erro && <p style={{ color: \"red\" }}>{erro}<\/p>}\n      <button>Cadastrar<\/button>\n    <\/form>\n  );\n}\nexport default Dia16;", "arquivo": "src/dias/Dia16.jsx", "lex": "jsx", "lsol": "jsx"}, {"titulo": "Catálogo com busca", "novo": "Elevar o estado", "explicacao": "Quando dois componentes precisam da mesma informação, o estado fica no pai. O pai passa o valor para um filho e a função de mudar para o outro. É o jeito do React de fazer componentes conversarem.", "exemplo": "// pai\nconst [busca, setBusca] = useState(\"\");\n<CampoBusca valor={busca} aoMudar={setBusca} />\n<ListaFilmes busca={busca} />", "tarefas": ["Crie um array com 10 filmes ou séries (título e ano)", "Componente `CampoBusca` recebe `valor` e `aoMudar`", "Componente `ListaFilmes` recebe `busca` e mostra só os que combinam", "O estado da busca fica no Dia17 (o pai)", "Busca sem diferenciar maiúscula e minúscula (`toLowerCase`)"], "desafio": "Mostre \"Nenhum resultado para ...\" quando a lista ficar vazia.", "solucao": "// src/components/CampoBusca.jsx\nfunction CampoBusca({ valor, aoMudar }) {\n  return (\n    <input\n      value={valor}\n      onChange={(e) => aoMudar(e.target.value)}\n      placeholder=\"Buscar...\"\n    />\n  );\n}\nexport default CampoBusca;\n\n// src/components/ListaFilmes.jsx\nfunction ListaFilmes({ filmes, busca }) {\n  const achados = filmes.filter((f) =>\n    f.titulo.toLowerCase().includes(busca.toLowerCase())\n  );\n\n  if (achados.length === 0) return <p>Nenhum resultado para \"{busca}\"<\/p>;\n\n  return (\n    <ul>\n      {achados.map((f) => <li key={f.titulo}>{f.titulo} ({f.ano})<\/li>)}\n    <\/ul>\n  );\n}\nexport default ListaFilmes;\n\n// src/dias/Dia17.jsx\nimport { useState } from \"react\";\nimport CampoBusca from \"../components/CampoBusca\";\nimport ListaFilmes from \"../components/ListaFilmes\";\n\nconst filmes = [\n  { titulo: \"Cidade de Deus\", ano: 2002 },\n  { titulo: \"Central do Brasil\", ano: 1998 },\n  { titulo: \"Tropa de Elite\", ano: 2007 },\n  { titulo: \"O Auto da Compadecida\", ano: 2000 },\n  { titulo: \"Bacurau\", ano: 2019 },\n  // ...\n];\n\nfunction Dia17() {\n  const [busca, setBusca] = useState(\"\");\n  return (\n    <div>\n      <CampoBusca valor={busca} aoMudar={setBusca} />\n      <ListaFilmes filmes={filmes} busca={busca} />\n    <\/div>\n  );\n}\nexport default Dia17;", "arquivo": "src/dias/Dia17.jsx", "lex": "jsx", "lsol": "jsx"}, {"titulo": "Relógio digital", "novo": "useEffect", "explicacao": "`useEffect` roda código depois que o componente aparece na tela. Com `[]` no fim, roda só uma vez. O `return` dentro dele limpa o que foi criado quando o componente sai da tela.", "exemplo": "useEffect(() => {\n  const id = setInterval(() => setHora(new Date()), 1000);\n  return () => clearInterval(id);\n}, []);", "tarefas": ["Mostre a hora atual atualizando a cada segundo", "Formate com `toLocaleTimeString(\"pt-BR\")`", "Mostre a data por extenso com `toLocaleDateString(\"pt-BR\", { dateStyle: \"full\" })`", "Crie um cronômetro com Iniciar, Pausar e Zerar"], "desafio": "Mude o `document.title` da aba para mostrar o tempo do cronômetro (outro `useEffect`, com `[segundos]`).", "solucao": "// src/dias/Dia18.jsx\nimport { useEffect, useState } from \"react\";\n\nfunction Dia18() {\n  const [agora, setAgora] = useState(new Date());\n  const [segundos, setSegundos] = useState(0);\n  const [rodando, setRodando] = useState(false);\n\n  useEffect(() => {\n    const id = setInterval(() => setAgora(new Date()), 1000);\n    return () => clearInterval(id);\n  }, []);\n\n  useEffect(() => {\n    if (!rodando) return;\n    const id = setInterval(() => setSegundos((s) => s + 1), 1000);\n    return () => clearInterval(id);\n  }, [rodando]);\n\n  useEffect(() => {\n    document.title = `${segundos}s`;\n  }, [segundos]);\n\n  return (\n    <div>\n      <h1>{agora.toLocaleTimeString(\"pt-BR\")}<\/h1>\n      <p>{agora.toLocaleDateString(\"pt-BR\", { dateStyle: \"full\" })}<\/p>\n\n      <h2>{segundos}s<\/h2>\n      <button onClick={() => setRodando(true)}>Iniciar<\/button>\n      <button onClick={() => setRodando(false)}>Pausar<\/button>\n      <button onClick={() => { setRodando(false); setSegundos(0); }}>Zerar<\/button>\n    <\/div>\n  );\n}\nexport default Dia18;", "arquivo": "src/dias/Dia18.jsx", "lex": "jsx", "lsol": "jsx"}, {"titulo": "Bloco de notas que lembra", "novo": "useEffect + localStorage", "explicacao": "O `localStorage` guarda texto no navegador, mesmo depois de fechar. Leia uma vez no começo e salve sempre que o estado mudar, com um `useEffect` que observa esse estado.", "exemplo": "const [nota, setNota] = useState(() => localStorage.getItem(\"nota\") || \"\");\n\nuseEffect(() => {\n  localStorage.setItem(\"nota\", nota);\n}, [nota]);", "tarefas": ["Crie uma `textarea` grande para anotações", "Carregue o texto salvo quando a página abrir", "Salve a cada mudança", "Feche a aba, abra de novo e confira que o texto voltou", "Botão \"Apagar tudo\""], "desafio": "Volte na lista de tarefas do Dia 15 e faça ela salvar também. Array vira texto com `JSON.stringify` e volta com `JSON.parse`.", "solucao": "// src/dias/Dia19.jsx\nimport { useEffect, useState } from \"react\";\n\nfunction Dia19() {\n  const [nota, setNota] = useState(() => localStorage.getItem(\"nota\") || \"\");\n\n  useEffect(() => {\n    localStorage.setItem(\"nota\", nota);\n  }, [nota]);\n\n  return (\n    <div>\n      <h2>Minhas notas<\/h2>\n      <textarea\n        value={nota}\n        onChange={(e) => setNota(e.target.value)}\n        rows={15}\n        style={{ width: \"100%\" }}\n      />\n      <button onClick={() => setNota(\"\")}>Apagar tudo<\/button>\n    <\/div>\n  );\n}\nexport default Dia19;\n\n// Desafio (Dia 15):\n// const [tarefas, setTarefas] = useState(\n//   () => JSON.parse(localStorage.getItem(\"tarefas\")) || []\n// );\n// useEffect(() => {\n//   localStorage.setItem(\"tarefas\", JSON.stringify(tarefas));\n// }, [tarefas]);", "arquivo": "src/dias/Dia19.jsx", "lex": "jsx", "lsol": "jsx"}, {"titulo": "Buscador de CEP", "novo": "fetch no React", "explicacao": "Para buscar dados de uma API, use `fetch` dentro de uma função `async`. Guarde três coisas no estado: os dados, se está carregando e se deu erro. A ViaCEP é uma API brasileira grátis.", "exemplo": "const resposta = await fetch(`https://viacep.com.br/ws/${cep}/json/`);\nconst dados = await resposta.json();", "tarefas": ["Input para o CEP e botão Buscar", "Mostre \"Buscando...\" enquanto carrega", "Mostre rua, bairro, cidade e estado", "Se o CEP não existir, a API devolve `{ erro: true }`: mostre \"CEP não encontrado\"", "Só busque se tiver 8 números (tire o traço com `replace(/\\D/g, \"\")`)"], "desafio": "Desative o botão enquanto estiver carregando.", "solucao": "// src/dias/Dia20.jsx\nimport { useState } from \"react\";\n\nfunction Dia20() {\n  const [cep, setCep] = useState(\"\");\n  const [endereco, setEndereco] = useState(null);\n  const [carregando, setCarregando] = useState(false);\n  const [erro, setErro] = useState(\"\");\n\n  async function buscar(e) {\n    e.preventDefault();\n    const limpo = cep.replace(/\\D/g, \"\");\n    if (limpo.length !== 8) return setErro(\"Digite 8 números.\");\n\n    setCarregando(true);\n    setErro(\"\");\n    setEndereco(null);\n    try {\n      const resposta = await fetch(`https://viacep.com.br/ws/${limpo}/json/`);\n      const dados = await resposta.json();\n      if (dados.erro) setErro(\"CEP não encontrado.\");\n      else setEndereco(dados);\n    } catch {\n      setErro(\"Sem conexão. Tente de novo.\");\n    } finally {\n      setCarregando(false);\n    }\n  }\n\n  return (\n    <form onSubmit={buscar}>\n      <input value={cep} onChange={(e) => setCep(e.target.value)} placeholder=\"00000-000\" />\n      <button disabled={carregando}>{carregando ? \"Buscando...\" : \"Buscar\"}<\/button>\n\n      {erro && <p style={{ color: \"red\" }}>{erro}<\/p>}\n      {endereco && (\n        <p>\n          {endereco.logradouro}, {endereco.bairro}<br />\n          {endereco.localidade} - {endereco.uf}\n        <\/p>\n      )}\n    <\/form>\n  );\n}\nexport default Dia20;", "arquivo": "src/dias/Dia20.jsx", "lex": "jsx", "lsol": "jsx"}, {"titulo": "Gastos do Mês: planejamento", "novo": "Pensar em componentes", "explicacao": "Nos próximos 10 dias você faz um app de verdade: controle de entradas e saídas. Antes de codar, divida a tela em componentes e decida onde fica o estado. A regra: o estado fica no componente mais alto que precisa dele.", "exemplo": "App  (estado: lancamentos)\n├── Cabecalho\n├── Resumo        recebe lancamentos\n├── Formulario    recebe adicionar()\n└── Lista         recebe lancamentos e remover()\n    └── Item", "tarefas": ["Crie um projeto novo: `npm create vite@latest gastos-do-mes -- --template react`", "Desenhe a tela no papel e marque cada componente", "Crie a pasta `src/components` com os 5 arquivos vazios que só devolvem o nome", "Monte o `App.jsx` usando todos eles", "Crie o repositório no GitHub e faça o primeiro commit"], "desafio": "Escreva no README.md o que o app faz, em 3 frases.", "solucao": "// src/components/Resumo.jsx (os outros seguem o mesmo modelo)\nfunction Resumo() {\n  return <section>Resumo<\/section>;\n}\nexport default Resumo;\n\n// src/App.jsx\nimport Cabecalho from \"./components/Cabecalho\";\nimport Resumo from \"./components/Resumo\";\nimport Formulario from \"./components/Formulario\";\nimport Lista from \"./components/Lista\";\n\nfunction App() {\n  return (\n    <main>\n      <Cabecalho />\n      <Resumo />\n      <Formulario />\n      <Lista />\n    <\/main>\n  );\n}\nexport default App;", "arquivo": "src/App.jsx", "lex": "text", "lsol": "jsx"}, {"titulo": "Formulário de lançamento", "novo": "Formulário completo", "explicacao": "O formulário cuida só dos campos. Quando envia, ele chama a função `aoAdicionar` que veio do App. Assim o formulário não precisa saber onde os dados ficam.", "exemplo": "function Formulario({ aoAdicionar }) {\n  // ...\n  aoAdicionar({ id: Date.now(), descricao, valor: Number(valor), tipo, categoria });\n}", "tarefas": ["Campos: descrição, valor (`type=\"number\"`), tipo (entrada ou saída) e categoria", "Categorias: Salário, Mercado, Contas, Transporte, Lazer, Outros", "Converta o valor para número com `Number()`", "Valide: descrição preenchida e valor maior que 0", "Depois de enviar, limpe o formulário"], "desafio": "Use botões de rádio para escolher entre entrada e saída.", "solucao": "// src/components/Formulario.jsx\nimport { useState } from \"react\";\n\nconst categorias = [\"Salário\", \"Mercado\", \"Contas\", \"Transporte\", \"Lazer\", \"Outros\"];\nconst inicial = { descricao: \"\", valor: \"\", tipo: \"saida\", categoria: \"Mercado\" };\n\nfunction Formulario({ aoAdicionar }) {\n  const [form, setForm] = useState(inicial);\n  const [erro, setErro] = useState(\"\");\n\n  function mudar(e) {\n    setForm({ ...form, [e.target.name]: e.target.value });\n  }\n\n  function enviar(e) {\n    e.preventDefault();\n    const valor = Number(form.valor);\n    if (!form.descricao.trim() || valor <= 0) {\n      return setErro(\"Preencha a descrição e um valor maior que zero.\");\n    }\n    aoAdicionar({ ...form, id: Date.now(), valor, data: new Date().toISOString() });\n    setForm(inicial);\n    setErro(\"\");\n  }\n\n  return (\n    <form onSubmit={enviar}>\n      <input name=\"descricao\" value={form.descricao} onChange={mudar} placeholder=\"Descrição\" />\n      <input name=\"valor\" type=\"number\" step=\"0.01\" value={form.valor} onChange={mudar} placeholder=\"0,00\" />\n\n      <label>\n        <input type=\"radio\" name=\"tipo\" value=\"entrada\" checked={form.tipo === \"entrada\"} onChange={mudar} />\n        Entrada\n      <\/label>\n      <label>\n        <input type=\"radio\" name=\"tipo\" value=\"saida\" checked={form.tipo === \"saida\"} onChange={mudar} />\n        Saída\n      <\/label>\n\n      <select name=\"categoria\" value={form.categoria} onChange={mudar}>\n        {categorias.map((c) => <option key={c}>{c}<\/option>)}\n      <\/select>\n\n      {erro && <p className=\"erro\">{erro}<\/p>}\n      <button>Adicionar<\/button>\n    <\/form>\n  );\n}\nexport default Formulario;", "arquivo": "src/components/Formulario.jsx", "lex": "jsx", "lsol": "jsx"}, {"titulo": "Lista de lançamentos", "novo": "Estado no App", "explicacao": "O estado `lancamentos` fica no App. O App passa `adicionar` para o Formulário e a lista para a Lista. Os dados descem por props e as ações sobem por funções.", "exemplo": "const [lancamentos, setLancamentos] = useState([]);\n\nfunction adicionar(novo) {\n  setLancamentos([novo, ...lancamentos]);\n}", "tarefas": ["Crie o estado `lancamentos` no App", "Passe `adicionar` para o Formulario", "A Lista mostra cada lançamento com um componente `Item`", "Entrada aparece em verde com `+` e saída em vermelho com `-`", "Lista vazia mostra \"Nenhum lançamento ainda\""], "desafio": "Mostre a data do lançamento com `new Date(item.data).toLocaleDateString(\"pt-BR\")`.", "solucao": "// src/App.jsx\nimport { useState } from \"react\";\n// ...imports\n\nfunction App() {\n  const [lancamentos, setLancamentos] = useState([]);\n\n  function adicionar(novo) {\n    setLancamentos([novo, ...lancamentos]);\n  }\n\n  return (\n    <main>\n      <Cabecalho />\n      <Resumo lancamentos={lancamentos} />\n      <Formulario aoAdicionar={adicionar} />\n      <Lista lancamentos={lancamentos} />\n    <\/main>\n  );\n}\nexport default App;\n\n// src/components/Item.jsx\nfunction Item({ item }) {\n  const entrada = item.tipo === \"entrada\";\n  return (\n    <li className=\"item\">\n      <span>{item.descricao}<\/span>\n      <small>{item.categoria} · {new Date(item.data).toLocaleDateString(\"pt-BR\")}<\/small>\n      <strong style={{ color: entrada ? \"green\" : \"red\" }}>\n        {entrada ? \"+\" : \"-\"} R$ {item.valor.toFixed(2)}\n      <\/strong>\n    <\/li>\n  );\n}\nexport default Item;\n\n// src/components/Lista.jsx\nimport Item from \"./Item\";\n\nfunction Lista({ lancamentos }) {\n  if (lancamentos.length === 0) return <p>Nenhum lançamento ainda<\/p>;\n  return (\n    <ul>\n      {lancamentos.map((l) => <Item key={l.id} item={l} />)}\n    <\/ul>\n  );\n}\nexport default Lista;", "arquivo": "src/components/Lista.jsx", "lex": "jsx", "lsol": "jsx"}, {"titulo": "Resumo do mês", "novo": "reduce e formato de moeda", "explicacao": "`reduce` passa pelo array somando tudo num valor só. Para mostrar dinheiro do jeito brasileiro, use `toLocaleString` com `currency: \"BRL\"`. Coloque isso numa função em `src/utils.js` para usar em todo lugar.", "exemplo": "const total = lista.reduce((soma, item) => soma + item.valor, 0);\n\nvalor.toLocaleString(\"pt-BR\", { style: \"currency\", currency: \"BRL\" });\n// R$ 1.234,50", "tarefas": ["Crie `src/utils.js` com a função `moeda(valor)`", "No Resumo, calcule total de entradas, total de saídas e saldo", "Mostre os 3 em cartões lado a lado", "Saldo negativo fica vermelho", "Troque o `toFixed` do Item pela função `moeda`"], "desafio": "Mostre quanto da renda já foi gasta em porcentagem.", "solucao": "// src/utils.js\nexport function moeda(valor) {\n  return valor.toLocaleString(\"pt-BR\", { style: \"currency\", currency: \"BRL\" });\n}\n\n// src/components/Resumo.jsx\nimport { moeda } from \"../utils\";\n\nfunction Resumo({ lancamentos }) {\n  const entradas = lancamentos\n    .filter((l) => l.tipo === \"entrada\")\n    .reduce((soma, l) => soma + l.valor, 0);\n\n  const saidas = lancamentos\n    .filter((l) => l.tipo === \"saida\")\n    .reduce((soma, l) => soma + l.valor, 0);\n\n  const saldo = entradas - saidas;\n  const gasto = entradas > 0 ? Math.round((saidas / entradas) * 100) : 0;\n\n  return (\n    <section className=\"resumo\">\n      <div><small>Entradas<\/small><strong>{moeda(entradas)}<\/strong><\/div>\n      <div><small>Saídas<\/small><strong>{moeda(saidas)}<\/strong><\/div>\n      <div>\n        <small>Saldo<\/small>\n        <strong style={{ color: saldo < 0 ? \"red\" : \"inherit\" }}>{moeda(saldo)}<\/strong>\n      <\/div>\n      <p>{gasto}% da renda já foi gasta<\/p>\n    <\/section>\n  );\n}\nexport default Resumo;", "arquivo": "src/components/Resumo.jsx", "lex": "jsx", "lsol": "jsx"}, {"titulo": "Remover com confirmação", "novo": "Confirmação dentro da tela", "explicacao": "Em vez de `confirm()` do navegador, faça a confirmação no próprio item: o primeiro clique troca o botão por \"Confirmar?\" e só o segundo remove. É um estado local do Item.", "exemplo": "const [confirmando, setConfirmando] = useState(false);\n\n{confirmando\n  ? <button onClick={() => aoRemover(item.id)}>Confirmar?<\/button>\n  : <button onClick={() => setConfirmando(true)}>Remover<\/button>}", "tarefas": ["Crie a função `remover(id)` no App e passe até o Item (App → Lista → Item)", "No Item, o primeiro clique mostra \"Confirmar?\" e \"Cancelar\"", "Confirmar remove, Cancelar volta ao normal", "Confira que o Resumo recalcula sozinho"], "desafio": "Mostre \"Lançamento removido\" por 3 segundos no topo depois de remover (`setTimeout`).", "solucao": "// src/App.jsx\nfunction remover(id) {\n  setLancamentos(lancamentos.filter((l) => l.id !== id));\n}\n// <Lista lancamentos={lancamentos} aoRemover={remover} />\n\n// src/components/Lista.jsx\n// {lancamentos.map((l) => <Item key={l.id} item={l} aoRemover={aoRemover} />)}\n\n// src/components/Item.jsx\nimport { useState } from \"react\";\nimport { moeda } from \"../utils\";\n\nfunction Item({ item, aoRemover }) {\n  const [confirmando, setConfirmando] = useState(false);\n  const entrada = item.tipo === \"entrada\";\n\n  return (\n    <li className=\"item\">\n      <span>{item.descricao}<\/span>\n      <strong style={{ color: entrada ? \"green\" : \"red\" }}>\n        {entrada ? \"+\" : \"-\"} {moeda(item.valor)}\n      <\/strong>\n      {confirmando ? (\n        <>\n          <button onClick={() => aoRemover(item.id)}>Confirmar?<\/button>\n          <button onClick={() => setConfirmando(false)}>Cancelar<\/button>\n        <\/>\n      ) : (\n        <button onClick={() => setConfirmando(true)}>Remover<\/button>\n      )}\n    <\/li>\n  );\n}\nexport default Item;", "arquivo": "src/components/Item.jsx", "lex": "jsx", "lsol": "jsx"}, {"titulo": "Filtros", "novo": "Estado derivado", "explicacao": "Não guarde a lista filtrada no estado. Guarde só o filtro escolhido e calcule a lista filtrada toda vez que o componente desenhar. Isso se chama estado derivado e evita dados duplicados.", "exemplo": "const [tipo, setTipo] = useState(\"todos\");\n\nconst visiveis = lancamentos.filter((l) =>\n  tipo === \"todos\" ? true : l.tipo === tipo\n);", "tarefas": ["Crie o componente `Filtros` com botões: Todos, Entradas, Saídas", "Adicione um `select` de categoria com a opção \"Todas\"", "Adicione uma busca por descrição", "Os filtros ficam no estado do App e a Lista recebe só os visíveis", "O botão do filtro ativo fica destacado"], "desafio": "Mostre \"Mostrando X de Y lançamentos\".", "solucao": "// src/App.jsx\nconst [filtro, setFiltro] = useState({ tipo: \"todos\", categoria: \"Todas\", busca: \"\" });\n\nconst visiveis = lancamentos.filter((l) => {\n  if (filtro.tipo !== \"todos\" && l.tipo !== filtro.tipo) return false;\n  if (filtro.categoria !== \"Todas\" && l.categoria !== filtro.categoria) return false;\n  return l.descricao.toLowerCase().includes(filtro.busca.toLowerCase());\n});\n\n// <Filtros filtro={filtro} aoMudar={setFiltro} />\n// <p>Mostrando {visiveis.length} de {lancamentos.length} lançamentos<\/p>\n// <Lista lancamentos={visiveis} aoRemover={remover} />\n\n// src/components/Filtros.jsx\nconst tipos = [[\"todos\", \"Todos\"], [\"entrada\", \"Entradas\"], [\"saida\", \"Saídas\"]];\nconst categorias = [\"Todas\", \"Salário\", \"Mercado\", \"Contas\", \"Transporte\", \"Lazer\", \"Outros\"];\n\nfunction Filtros({ filtro, aoMudar }) {\n  return (\n    <div className=\"filtros\">\n      {tipos.map(([valor, rotulo]) => (\n        <button\n          key={valor}\n          className={filtro.tipo === valor ? \"ativo\" : \"\"}\n          onClick={() => aoMudar({ ...filtro, tipo: valor })}\n        >\n          {rotulo}\n        <\/button>\n      ))}\n      <select value={filtro.categoria} onChange={(e) => aoMudar({ ...filtro, categoria: e.target.value })}>\n        {categorias.map((c) => <option key={c}>{c}<\/option>)}\n      <\/select>\n      <input\n        value={filtro.busca}\n        onChange={(e) => aoMudar({ ...filtro, busca: e.target.value })}\n        placeholder=\"Buscar\"\n      />\n    <\/div>\n  );\n}\nexport default Filtros;", "arquivo": "src/components/Filtros.jsx", "lex": "jsx", "lsol": "jsx"}, {"titulo": "Salvar no navegador", "novo": "Persistência", "explicacao": "Do jeito que está, recarregar a página apaga tudo. Use o que aprendeu no Dia 19: carregue do `localStorage` no começo e salve sempre que `lancamentos` mudar.", "exemplo": "const [lancamentos, setLancamentos] = useState(() => {\n  const salvo = localStorage.getItem(\"lancamentos\");\n  return salvo ? JSON.parse(salvo) : [];\n});", "tarefas": ["Carregue os lançamentos salvos no `useState`", "Salve com `useEffect` observando `lancamentos`", "Adicione 3 lançamentos, recarregue e confira", "Veja os dados no F12 > Application > Local Storage"], "desafio": "Crie um botão \"Começar mês novo\" que apaga tudo, com confirmação na tela igual à do Dia 25.", "solucao": "// src/App.jsx\nimport { useEffect, useState } from \"react\";\n\nfunction App() {\n  const [lancamentos, setLancamentos] = useState(() => {\n    const salvo = localStorage.getItem(\"lancamentos\");\n    return salvo ? JSON.parse(salvo) : [];\n  });\n\n  useEffect(() => {\n    localStorage.setItem(\"lancamentos\", JSON.stringify(lancamentos));\n  }, [lancamentos]);\n\n  // ...resto igual\n}", "arquivo": "src/App.jsx", "lex": "jsx", "lsol": "jsx"}, {"titulo": "Seu primeiro hook", "novo": "Custom hook", "explicacao": "Um custom hook é uma função que começa com `use` e usa outros hooks dentro. Ele guarda uma lógica para você reaproveitar. O código do Dia 27 vira `useLocalStorage`, e qualquer componente pode usar.", "exemplo": "const [lancamentos, setLancamentos] = useLocalStorage(\"lancamentos\", []);", "tarefas": ["Crie `src/hooks/useLocalStorage.js`", "Ele recebe `chave` e `valorInicial` e devolve `[valor, setValor]`, igual ao `useState`", "Troque o código do App pelo hook", "Use o hook também para lembrar o filtro escolhido"], "desafio": "Coloque um `try/catch` no `JSON.parse`, para o app não quebrar se o dado salvo estiver estragado.", "solucao": "// src/hooks/useLocalStorage.js\nimport { useEffect, useState } from \"react\";\n\nexport function useLocalStorage(chave, valorInicial) {\n  const [valor, setValor] = useState(() => {\n    try {\n      const salvo = localStorage.getItem(chave);\n      return salvo ? JSON.parse(salvo) : valorInicial;\n    } catch {\n      return valorInicial;\n    }\n  });\n\n  useEffect(() => {\n    localStorage.setItem(chave, JSON.stringify(valor));\n  }, [chave, valor]);\n\n  return [valor, setValor];\n}\n\n// src/App.jsx\nimport { useLocalStorage } from \"./hooks/useLocalStorage\";\n\nconst [lancamentos, setLancamentos] = useLocalStorage(\"lancamentos\", []);\nconst [filtro, setFiltro] = useLocalStorage(\"filtro\", { tipo: \"todos\", categoria: \"Todas\", busca: \"\" });", "arquivo": "src/hooks/useLocalStorage.js", "lex": "jsx", "lsol": "jsx"}, {"titulo": "Gráfico de gastos", "novo": "Gráfico com div", "explicacao": "Não precisa de biblioteca para um gráfico simples. Agrupe os gastos por categoria num objeto e desenhe cada barra como uma `div` com `width` em porcentagem do maior valor.", "exemplo": "const porCategoria = {};\nfor (const l of saidas) {\n  porCategoria[l.categoria] = (porCategoria[l.categoria] || 0) + l.valor;\n}", "tarefas": ["Crie o componente `Grafico` que recebe os lançamentos", "Agrupe só as saídas por categoria", "Ordene da maior para a menor com `Object.entries(...).sort()`", "Desenhe uma barra por categoria com nome e valor", "A maior barra ocupa 100% da largura"], "desafio": "Mostre a porcentagem de cada categoria em relação ao total gasto.", "solucao": "// src/components/Grafico.jsx\nimport { moeda } from \"../utils\";\n\nfunction Grafico({ lancamentos }) {\n  const porCategoria = {};\n  for (const l of lancamentos) {\n    if (l.tipo !== \"saida\") continue;\n    porCategoria[l.categoria] = (porCategoria[l.categoria] || 0) + l.valor;\n  }\n\n  const linhas = Object.entries(porCategoria).sort((a, b) => b[1] - a[1]);\n  if (linhas.length === 0) return null;\n\n  const maior = linhas[0][1];\n  const total = linhas.reduce((s, [, v]) => s + v, 0);\n\n  return (\n    <section>\n      <h2>Gastos por categoria<\/h2>\n      {linhas.map(([cat, valor]) => (\n        <div key={cat} style={{ marginBottom: 8 }}>\n          <div>{cat} · {moeda(valor)} · {Math.round((valor / total) * 100)}%<\/div>\n          <div style={{ background: \"#eee\", height: 12, borderRadius: 6 }}>\n            <div style={{ width: `${(valor / maior) * 100}%`, height: \"100%\", background: \"#0e8fb3\", borderRadius: 6 }} />\n          <\/div>\n        <\/div>\n      ))}\n    <\/section>\n  );\n}\nexport default Grafico;", "arquivo": "src/components/Grafico.jsx", "lex": "jsx", "lsol": "jsx"}, {"titulo": "No ar", "novo": "Build e deploy na Vercel", "explicacao": "`npm run build` gera a versão final do app na pasta `dist`. A Vercel liga no seu GitHub e publica sozinha a cada `git push`. É grátis para projetos pessoais.", "exemplo": "npm run build\nnpm run preview   # testa a versão final em localhost:4173\n\ngit add .\ngit commit -m \"Gastos do Mês pronto\"\ngit push", "tarefas": ["Revise o visual: deixe o app bonito no CSS e funcionando no celular", "Rode `npm run build` e confira que não deu erro", "Envie tudo para o GitHub", "Entre em vercel.com com a conta do GitHub, clique em Add New > Project e importe o repositório", "A Vercel reconhece o Vite sozinha. Clique em Deploy", "Abra o link no celular e mande para alguém testar"], "desafio": "Coloque o link do app no seu portfólio, na página de projetos.", "solucao": "Seu link fica assim:\nhttps://gastos-do-mes.vercel.app\n\nSe a página ficar branca:\n- abra o F12 > Console e leia o erro\n- rode npm run build no seu computador; se der erro lá, conserte antes\n\nDaqui pra frente:\ncada git push publica uma versão nova sozinho.", "arquivo": "Vercel", "lex": "bash", "lsol": "text"}];
+const FASES = [
+  { nome: "Base", de: 1, ate: 10, cor: "--ph-1" },
+  { nome: "Estado", de: 11, ate: 20, cor: "--ph-2" },
+  { nome: "App completo", de: 21, ate: 30, cor: "--ph-3" }
+];
+const faseDe = n => FASES.find(f => n >= f.de && n <= f.ate);
+const pad = n => String(n).padStart(2, "0");
+const LANG = { html: "HTML", css: "CSS", js: "JavaScript", jsx: "JSX", ts: "TypeScript", tsx: "TSX", bash: "Terminal", text: "Passos" };
+
+/* ---------- estado ---------- */
+const CHAVE = "react-30-dias-v1";
+let estado = { feitos: [], tarefas: {}, notas: {} };
+try { const s = JSON.parse(localStorage.getItem(CHAVE)); if (s && Array.isArray(s.feitos)) estado = Object.assign(estado, s); } catch (e) {}
+let selecionado = null;
+let docRef = null;
+let salvando = Promise.resolve();
+
+function limpo() {
+  return { feitos: [...estado.feitos].sort((a, b) => a - b), tarefas: estado.tarefas, notas: estado.notas };
+}
+function salvarLocal() { try { localStorage.setItem(CHAVE, JSON.stringify(limpo())); } catch (e) {} }
+function salvar() {
+  salvarLocal();
+  if (!docRef) return;
+  const dados = JSON.parse(JSON.stringify(limpo()));
+  salvando = salvando.then(() => docRef.set(dados)).then(() => marcaSync("Progresso salvo na sua conta")).catch(() => marcaSync("Salvo só neste navegador"));
+}
+function marcaSync(t) { document.getElementById("sync").textContent = t; }
+
+const hoje = () => { for (let n = 1; n <= 30; n++) if (!estado.feitos.includes(n)) return n; return 30; };
+
+/* ---------- texto ---------- */
+function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+function md(s) {
+  return esc(s.replace(/`` ` ``/g, "\u0000"))
+    .replace(/`([^`]+)`/g, "<code>$1</code>")
+    .replace(/\u0000/g, "<code>`</code>");
+}
+
+/* ---------- mapa ---------- */
+function desenharMapa() {
+  const alvo = document.getElementById("niveis");
+  const h = hoje();
+  alvo.innerHTML = FASES.map(f => {
+    let tiles = "";
+    for (let n = f.de; n <= f.ate; n++) {
+      const cls = ["tile"];
+      if (estado.feitos.includes(n)) cls.push("done");
+      if (n === h && !estado.feitos.includes(n)) cls.push("today");
+      if (n === selecionado) cls.push("sel");
+      tiles += `<button class="${cls.join(" ")}" data-n="${n}" aria-label="Dia ${n}: ${esc(DIAS[n - 1].titulo)}${estado.feitos.includes(n) ? " (feito)" : ""}">${pad(n)}</button>`;
+    }
+    return `<div class="level" style="--ph:var(${f.cor})"><div class="level-name">${f.nome}</div><div class="tiles">${tiles}</div></div>`;
+  }).join("");
+  const total = estado.feitos.length;
+  document.getElementById("feitos").textContent = total;
+  document.getElementById("barra").style.width = (total / 30 * 100) + "%";
+}
+document.getElementById("niveis").addEventListener("click", e => {
+  const b = e.target.closest(".tile");
+  if (!b) return;
+  abrir(Number(b.dataset.n), true);
+});
+
+/* ---------- ficha do dia ---------- */
+function abrir(n, rolar) {
+  selecionado = n;
+  const d = DIAS[n - 1];
+  const f = faseDe(n);
+  const feito = estado.feitos.includes(n);
+  const marcadas = estado.tarefas[n] || [];
+  const el = document.getElementById("dia");
+  el.style.setProperty("--ph", `var(${f.cor})`);
+
+  el.innerHTML = `
+    <div class="day-head">
+      <div class="day-meta">
+        <span class="chip">Dia ${pad(n)} · ${f.nome}</span>
+        ${feito ? '<span class="chip ok">Feito</span>' : (n === hoje() ? '<span class="chip hoje">Hoje</span>' : "")}
+      </div>
+      <h2>${esc(d.titulo)}</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-n"><b>1</b>Novo</div>
+        <div class="step-body">
+          <h3>${md(d.novo)}</h3>
+          <span class="time">cerca de 5 min</span>
+          <p>${md(d.explicacao)}</p>
+          <div class="codebox"><span class="tag">${LANG[d.lex]}</span><pre><code>${esc(d.exemplo)}</code></pre></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n"><b>2</b>Faça</div>
+        <div class="step-body">
+          <h3>Construa o projeto</h3>
+          <span class="time">cerca de 40 min · ${esc(d.arquivo)}</span>
+          <ul class="tasks">
+            ${d.tarefas.map((t, i) => `<li><label><input type="checkbox" id="t-${n}-${i}" data-i="${i}" ${marcadas.includes(i) ? "checked" : ""}><span>${md(t)}</span></label></li>`).join("")}
+          </ul>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n"><b>3</b>Desafio</div>
+        <div class="step-body">
+          <h3>Sem olhar nada</h3>
+          <span class="time">cerca de 10 min</span>
+          <p class="challenge">${md(d.desafio)}</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n"><b>4</b>Confira</div>
+        <div class="step-body" id="sol-area">
+          <h3>Solução</h3>
+          <div class="row"><button class="btn" id="ver-sol">Mostrar solução</button></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n"><b>5</b>Anote</div>
+        <div class="step-body">
+          <h3>O que aprendi ou ficou com dúvida</h3>
+          <textarea id="nota-${n}" placeholder="Ex.: confundi o for do label com o id do campo">${esc(estado.notas[n] || "")}</textarea>
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      <div class="row">
+        <button class="btn" id="ant" ${n === 1 ? "disabled" : ""}>← Dia ${pad(Math.max(1, n - 1))}</button>
+        <button class="btn" id="prox" ${n === 30 ? "disabled" : ""}>Dia ${pad(Math.min(30, n + 1))} →</button>
+      </div>
+      <button class="btn ${feito ? "done" : "primary"}" id="marcar">${feito ? "Feito ✓ (desmarcar)" : "Marcar dia como feito"}</button>
+    </div>`;
+
+  el.querySelectorAll(".tasks input").forEach(cb => cb.addEventListener("change", () => {
+    const lista = new Set(estado.tarefas[n] || []);
+    cb.checked ? lista.add(Number(cb.dataset.i)) : lista.delete(Number(cb.dataset.i));
+    estado.tarefas[n] = [...lista].sort();
+    salvar();
+  }));
+
+  let t;
+  el.querySelector("textarea").addEventListener("input", e => {
+    estado.notas[n] = e.target.value;
+    clearTimeout(t);
+    t = setTimeout(salvar, 900);
+  });
+
+  el.querySelector("#ver-sol").addEventListener("click", () => {
+    const area = document.getElementById("sol-area");
+    area.querySelector(".row").outerHTML = `
+      <div class="gate">
+        <p>Você tentou sozinho por pelo menos 20 minutos?</p>
+        <div class="row">
+          <button class="btn primary" id="sim">Sim, quero conferir</button>
+          <button class="btn" id="nao">Ainda não, vou tentar mais</button>
+        </div>
+      </div>`;
+    area.querySelector("#nao").addEventListener("click", () => abrir(n, false));
+    area.querySelector("#sim").addEventListener("click", () => {
+      area.querySelector(".gate").outerHTML = `
+        <div class="codebox"><span class="tag">${LANG[d.lsol]}</span><pre><code id="sol-code">${esc(d.solucao)}</code></pre></div>
+        <p class="muted">Sua solução não precisa ficar igual. Se funciona e você entende cada linha, está certo.</p>`;
+    });
+  });
+
+  el.querySelector("#ant").addEventListener("click", () => abrir(n - 1, true));
+  el.querySelector("#prox").addEventListener("click", () => abrir(n + 1, true));
+  el.querySelector("#marcar").addEventListener("click", () => {
+    if (estado.feitos.includes(n)) estado.feitos = estado.feitos.filter(x => x !== n);
+    else estado.feitos.push(n);
+    salvar();
+    desenharMapa();
+    abrir(n, false);
+  });
+
+  desenharMapa();
+  if (rolar) el.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+/* ---------- início ---------- */
+desenharMapa();
+abrir(hoje(), false);
+
+/* conta: progresso acompanha você em qualquer computador */
+(async () => {
+  try {
+    const [db, user] = await Promise.all([claude.use("db"), claude.use("user")]);
+    if (!db || !user) return;
+    const id = await user.id();
+    if (!id) return;
+    docRef = db.doc(`data/users/${id}/react-30-dias-v1`);
+    const snap = await docRef.get();
+    if (snap.exists) {
+      const r = snap.data();
+      const juntos = new Set([...(r.feitos || []), ...estado.feitos]);
+      estado.feitos = [...juntos];
+      estado.tarefas = Object.assign({}, r.tarefas || {}, estado.tarefas);
+      estado.notas = Object.assign({}, r.notas || {}, estado.notas);
+    }
+    salvar();
+    desenharMapa();
+    abrir(selecionado || hoje(), false);
+    marcaSync("Progresso salvo na sua conta");
+  } catch (e) {
+    marcaSync("Progresso salvo neste navegador");
+  }
+})();
+</script>
+
+
+</body></html>
