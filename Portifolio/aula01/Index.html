@@ -1,13 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="Pt-BR">
+
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+    <link rel="stylesheet" href="css/style.css"
     <title>Gustavo Costa</title>
+
 </head>
 
 
 <body>
+    <!--Menu de navegação-->
+    <header><!-- Topo -->
+        <nav>
+            <a href="#sobre">Sobre</a>
+            <a href="#habilidades">Habilidades</a>
+            <a href="#contato">Contato</a>
+            <a href="#experiencia">Experiencia</a>
+            <a href="#Encontre">Encontre</a>
+            <a href="#carreira">carreira</a>
+            <a href="projetos.html">Projetos</a>
+        </nav>
+    </header>
+
     <!-- -->
     <h1>Gustavo Costa</h1>
     <p>Desenvolvedor Web em Formação</p>
@@ -15,104 +33,130 @@
     <h2> Sobre mim</h2>
     <p> Trabalho com <strong>planejamento</strong> e estudo<em> programação</em></p>
     <p> Sou estudante de programação,<strong> e estudo por amor</strong>,
-         e quero ganhar muitdo <em>dinheiro</em> fazendo o que eu <em>amo</em>
+        e quero ganhar muitdo <em>dinheiro</em> fazendo o que eu <em>amo</em>
         Aprincipo não sabia que gostaria <strong>tanto da area, </strong>porem tenho me destacado.</p>
 
-         <!-- -->   
-        <header><!-- Topo -->
-        <nav> <!-- Menu ou navegação -->
-            <a href="#sobre">Sobre</a>
-            <a href="#habilidades">Habilidades</a>
-            <a href="#contato">Contato</a>
-            <a href="#experiencia">Experiencia</a>
-            <a href="#Encontre">Encontre</a>
-        </nav>
-        </header>
+    <!-- -->
 
-        <h1>Gustavo Costa</h1>
-        <img src="../img/devgustavo.jpeg" 
-        alt="Desenvolvedor Gustavo Costa" 
-        width="200">
-        <p>Desenvolvedor web em Formação</p>
-        
-             
-         <main><!-- Conteudo -->
-            <section id="sobre"><!-- uma seção com id -->
-                <h2> Sobre mim</h2>
-                <p> Atualmente estou trabalhando na NM Engenharia,
-                    no cargo de au. planejamento.
+
+    <h1>Gustavo Costa</h1>
+    <img src="../img/devgustavo.jpeg" alt="Desenvolvedor Gustavo Costa" width="200">
+    <p>Desenvolvedor web em Formação</p>
+
+
+    <main><!-- Conteudo -->
+        <section id="sobre"><!-- uma seção com id -->
+            <h2> Sobre mim</h2>
+            <p> Atualmente estou trabalhando na NM Engenharia,
+                no cargo de au. planejamento.
+            </p>
+        </section>
+
+        <section id="habilidades">
+            <h2> Habilidades</h2>
+            <ul>
+                <li> Excel</li>
+                <li> Automação de tarefas</li>
+                <li> Desenvolvimento Web</li>
+            </ul>
+        </section>
+
+        <section id="contato">
+            <h2>Contato</h2>
+            <ul>
+                <li> Meu contato </li>
+            </ul>
+
+            <form id="from-Contato">
+                <p>
+                   <label for="nome">Nome</label><br>
+                   <input id="nome" type="text" placeholder="Seu nome" required>
                 </p>
-             </section>
+                <p>
+                    <label for="e-mail">E-mail</label><br>
+                    <input id="e-mail" type="email" placeholder="seuemail@email.com" required>
+                </p>
+                <p>
+                    <label for="mensagem">Mensagem</label><br>
+                    <textarea id="mensagem" rows="5" placeholder="Escreva aqui" required></textarea>
+                </p>      
+                <button type="submit">Enviar mensagem</button>
 
-            <section id="habilidades"> 
-                <h2> Habilidades</h2>
-                <ul>
-                    <li> Excel</li>
-                    <li> Automação de tarefas</li>
-                    <li> Desenvolvimento Web</li>
-                </ul>
-            </section>
+            </form>
+        </section>
 
-            <section id="contato">
-                <h2>Contato</h2>
-                <ul><li> Meu contato </li></ul>
-            </section>
+        <section id="experiencia">
+            <h2>Experiencia</h2>
+            <ul>
+                <li>Almoxarife</li>
+                <li>RH</li>
+                <li>Planejamento</li>
+            </ul>
+        </section>
 
-            <section id="experiencia">
-                <h2>Experiencia</h2>
-                <ul>
-                    <li>Almoxarife</li>
-                    <li>RH</li>
-                    <li>Planejamento</li>
-                </ul>
-            </section>
 
-        </main>
+    </main>
 
-        
 
-        <section id="Encontre">
+
+    <section id="Encontre">
         <h2>Contato</h2>
         <ul>
             <li><a href="https://github.com/SoueuGustavoCosta" target="_blank">github</a></li>
             <li><a href="https://soueugustavocosta.github.io/GustavoCosta/#inicio" target="_blank">Portifolio</a></li>
             <li><a href="mailto:costagustavogt@gmail.com">Mande um e-mail</a></li>
         </ul>
-        </section>
+    </section>
 
 
-
-
-
-        <table>
-            <tr>
-                <th>Empresa</th>
-                <th>Tempo</th>
-                <th>cargo</th>
-            </tr>
-            <tr>
-                <td>NM Engenharia</td>
-                <td>1 um ano</td>
-                <td>Planejamento</td>
-            </tr>
+    <section id="carreira">
+        <h2>carreira</h2>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Estudos</th>
+                    <th>Projetos</th>
+                    <th>Empregos</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Desenvolvimento Web</td>
+                    <td>Jogos dev</td>
+                    <td>Nm</td>
+                </tr>
+                <tr>
+                    <td>Banco de dados</td>
+                    <td>Finfamilia</td>
+                    <td>ACPL</td>
+                </tr>
+            </tbody>
         </table>
+    </section>
+    </table>
 
 
-      <!-- <table>
-        <tr>
-            <th> Empresa</th>
-            <th>Cargo</th>
-        </tr>
-        <tr>
-            <th>Empresa</th>
-            <td>Auxiliar</td>
-        </tr>
-       </table>-->
-
-        <footer> © 2026 Gustavo Costa</foooter>
+    <!-- -->
+    <article>
+        <h3>Nome do Projeto</h3>
+        <p>O que ele faz.</p>
+        <a href="projetos.html">Projetos</a>
+    </article>
 
 
+    <!-- 
+    <label for="nome">Nome</label>
 
-        
+    <input id="name" type="text" required> 
+    -->
+
+
+
+    <footer> © 2026 Gustavo Costa</foooter>
+
+
+
+
 </body>
+
 </html>

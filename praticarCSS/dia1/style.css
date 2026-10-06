@@ -1,0 +1,39 @@
+body {
+    background-color: #1e1e2f;
+    font-family: Arial,
+    sans-serif;
+}
+
+
+.cartao {
+    background-color: white;
+width: 350px;
+padding: 30px;
+margin: 80px auto;
+border-radius: 12px;
+text-align: center;
+
+}
+.nome{
+    color: #6c5ce7;
+    font-size: 32px;
+}
+
+.cargo{
+    color: #636e72;
+    texte-transform: uppercase;
+    letter-spacing: 2px;
+    background-color: #ffeaa7;
+    padding: 4px, 8px;
+    display: inline-block;
+}
+
+.frase {
+    font-style: italic;
+}
+
+.contato {
+    color: #00b894
+    font-weigth bold;
+}
+
