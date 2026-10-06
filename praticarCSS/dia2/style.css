@@ -1,27 +1,94 @@
-*{
+* {
     margin: 0;
-    padding: : 0;
+    padding: 0;
     box-sizing: border-box;
 }
 
-body{
+body {
     background-color: #f0f2f5;
     font-family: Arial, sans-serif;
 }
 
-.perfil{
+.perfil {
     background-color: white;
-    width: 320px ;
+    width: 320px;
     padding: 24px;
-    border-radius: 16px ;
+    border-radius: 16px;
     margin: 60px auto;
     text-align: center;
-    box-shadow: 0, 10px, 30px, tgba(0,0,0,.1);
+    box-shadow: 0, 10px, 30px, tgba(0, 0, 0, .1);
 }
 
-.avatar{
+.avatar {
+    width: 100px;
+    height: 100px;
     background-color: #0984e3;
     border-radius: 50%;
     line-height: 60px;
     margin: 0auto 16px;
+    color: white;
+    font-size: 32px;
+    font-weight: bold;
+    line-height: 92px;
+    margin: 0 auto 16px;
+    border: solid 4px#74b9ff;
+
+}
+
+.perfil h2 {
+    color: #2d3436;
+    margin-bottom: 4px;
+}
+
+.usuario {
+    color: #b2bec3;
+    font-size: 14px;
+
+}
+
+.bio {
+    margin: 16px 0;
+    color: #636e72;
+    line-height: 1.5;
+}
+
+.stats {
+    border-top: 1px solid #eeeeee;
+    padding-top: 16px;
+}
+
+.stat {
+    display: inline-block;
+    width: 32%;
+
+}
+
+.numero {
+    display: block;
+    font-size: 20px;
+    font-weight: bold;
+    color: #2d3436;
+
+}
+
+.rotulo{
+    fonte-size: 12px;
+    color: #b2bec3;
+}
+
+.btn-seguir{
+    width: 100%;
+    padding: 12px;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    margin-top: 20 px;
+    background-color: #0984e3;
+    font-size: 16px;
+    cursor:pointer;
+
+}
+
+.btn-seguir:hover{
+    background-color: #0870c0;
 }
