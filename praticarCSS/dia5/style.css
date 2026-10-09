@@ -1,0 +1,112 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #f5f6fa;
+    color: #2d3436;
+    font-family: Arial, sans-serif;
+}
+
+.precos {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+h2 {
+    font-size: 40px;
+}
+
+.sub {
+    color: #636e72;
+    margin-bottom: 48px;
+}
+
+.planos {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.plano {
+    background-color: white;
+    padding: 32px;
+    border-radius: 16px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+    flex: 1 1 260px;
+    max-width: 320px;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.preco {
+    font-size: 48px;
+    font-weight: bold;
+    margin: 16px 0;
+}
+
+.moeda,
+.periodo {
+    font-size: 16px;
+    color: #636e72;
+    font-weight: normal;
+}
+
+.recursos {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 24px;
+}
+
+.recursos li {
+    padding: 10px o;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.btn {
+    display: block;
+    padding: 14px;
+    border-radius: 8px;
+    background-color: #2d3436;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: auto
+}
+
+.destaque {
+    border: 2px solid #6c5ce7;
+    transform: scale(1.05);
+    position: relative;
+}
+
+.destaque .btn {
+    background-color: #6c5ce7;
+
+}
+
+.selo {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #6c5ce7;
+    color: white;
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+}
+
+.plano:hover {
+    transform: translatey(-6px);
+}
+
+.destaque:hover {
+    transform: scale(1.05) translateY(-6px);
+}

@@ -1,0 +1,48 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+}
+
+body {
+    background-color: #111111;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+.topo {
+    text-align: center;
+    padding: 40px;
+
+    p {
+        color: #888888;
+    }
+}
+
+h1 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 200px;
+    gap: 16px;
+}
+
+.galeria {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px 40px;
+
+}
+
+.foto {
+    border-radius: 12px;
+    padding: 16px;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+}
+
+.foto:nth-child(1) {
+    background-color: linear-gradient(135deg, #667eea, #764ba2);
+
+}
