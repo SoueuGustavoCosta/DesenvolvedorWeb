@@ -1,0 +1,153 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #fffaf3;
+    color: #3e2723;
+    font-family: arial, sans-serif;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0;
+    padding: 0 20px;
+}
+
+.cabecalho {
+    background-color: rgb(30, 10, 10);
+    color: #fffaf3;
+    padding: 16px 0;
+}
+
+.cabecalho-conteudo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+
+}
+
+
+.menu {
+    display: flex;
+    gap: 20px;
+}
+
+.menu a {
+    color: #ffe0b2;
+    text-decoration: none;
+}
+
+.hero {
+    background-color: linear-gradient(135deg, #4e342e, #8d6e63);
+    color: white;
+    text-align: center;
+    padding: 80px 0;
+
+}
+
+.hero h1 {
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    line-height: 1.2;
+}
+
+.hero p {
+    margin: 16px 0 28px;
+}
+
+.btn {
+    background-color: #ffb74d;
+    color: #3e2723;
+    padding: 14px 28px;
+    border-radius: 999px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.secao {
+    padding: 60px 0;
+
+}
+
+.secao h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 32px;
+}
+
+.cardapio {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+
+}
+
+.item {
+    background-color: white;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px rgba(0, 0, 0, 0.06);
+    text-align: center;
+}
+
+.item-icone {
+    font-size: 40px;
+}
+
+.preco {
+    color: #bf360c;
+    font-weight: bold;
+}
+
+.sobre {
+    background-color: #efebe9;
+}
+
+.sobre-coteudo {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.sobre-imagem {
+    height: 250px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #a1887f, #4e342e);
+}
+
+.rodape {
+    background-color: #3e2723;
+    color: #d7ccc8;
+    text-align: center;
+    padding: 24px 0;
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    .cabecalho-conteudo {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .cardapio {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .sobre-coteudo {
+        flex-direction: row;
+        align-items: center;
+    }
+    .sobre-imagem{
+        flex: 1;
+    }
+}
