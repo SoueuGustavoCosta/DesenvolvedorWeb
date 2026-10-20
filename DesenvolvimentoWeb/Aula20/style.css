@@ -1,0 +1,37 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    margin: 20px;
+    padding: 20px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    background-color: antiquewhite ;
+}
+
+button{
+    border: none;
+    background-color: aqua;
+    border-radius: 12px;
+    margin: 5px;
+    padding: 7px;
+    font-weight: bold ;
+    cursor: pointer;
+}
+
+input{
+    border-radius: 5px;
+    border-width: 1px;
+    border-style: solid ;
+    padding: 5px;
+}
+
+h1{
+    margin-bottom: 12px;
+}
+p{
+    padding: 12px;
+}
